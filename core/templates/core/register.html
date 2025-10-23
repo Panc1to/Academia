@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+    <div style="max-width: 400px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Registro de Estudiante</h2>
+        
+        <form method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+            {% csrf_token %}
+            {% for field in form %}
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small style="color: #6c757d;">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <small style="color: #dc3545;">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn" style="margin-top: 1rem;">Registrarse</button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <p>¿Ya tienes una cuenta? <a href="{% url 'admin:login' %}" style="color: var(--primary-color);">Inicia sesión</a></p>
+        </div>
+    </div>
+{% endblock %}

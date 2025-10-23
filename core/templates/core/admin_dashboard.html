@@ -1,0 +1,259 @@
+{% extends "core/base.html" %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <h1>Panel de Administración</h1>
+        <p>Gestión del sistema educativo</p>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <i class="fas fa-users"></i>
+            <div class="stat-info">
+                <h3>{{ total_usuarios }}</h3>
+                <p>Usuarios Registrados</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <div class="stat-info">
+                <h3>{{ total_instructores }}</h3>
+                <p>Instructores</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-book"></i>
+            <div class="stat-info">
+                <h3>{{ total_cursos }}</h3>
+                <p>Cursos Totales</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-dollar-sign"></i>
+            <div class="stat-info">
+                <h3>{{ total_ingresos }}</h3>
+                <p>Ingresos Totales</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-shopping-cart"></i>
+            <div class="stat-info">
+                <h3>{{ total_compras }}</h3>
+                <p>Compras Activas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-sections">
+        <div class="section-card">
+            <div class="section-header">
+                <i class="fas fa-users-cog"></i>
+                <h2>Gestión de Usuarios</h2>
+            </div>
+            <div class="section-actions">
+                <a href="{% url 'admin:core_usuario_changelist' %}" class="admin-link">
+                    <i class="fas fa-list"></i>
+                    Ver todos los usuarios
+                </a>
+                <a href="{% url 'admin:core_usuario_add' %}" class="admin-link">
+                    <i class="fas fa-user-plus"></i>
+                    Agregar usuario
+                </a>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <i class="fas fa-graduation-cap"></i>
+                <h2>Gestión de Cursos</h2>
+            </div>
+            <div class="section-actions">
+                <a href="{% url 'admin:core_curso_changelist' %}" class="admin-link">
+                    <i class="fas fa-list"></i>
+                    Ver todos los cursos
+                </a>
+                <a href="{% url 'admin:core_curso_add' %}" class="admin-link">
+                    <i class="fas fa-plus-circle"></i>
+                    Agregar curso
+                </a>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <h2>Gestión de Compras</h2>
+            </div>
+            <div class="section-actions">
+                <a href="{% url 'admin:core_compra_changelist' %}" class="admin-link">
+                    <i class="fas fa-list"></i>
+                    Ver todas las compras
+                </a>
+                <a href="{% url 'admin:core_compra_add' %}" class="admin-link">
+                    <i class="fas fa-plus-circle"></i>
+                    Registrar compra
+                </a>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <i class="fas fa-certificate"></i>
+                <h2>Certificados</h2>
+            </div>
+            <div class="section-actions">
+                <a href="{% url 'admin:core_certificado_changelist' %}" class="admin-link">
+                    <i class="fas fa-list"></i>
+                    Ver certificados
+                </a>
+                <a href="{% url 'admin:core_certificado_add' %}" class="admin-link">
+                    <i class="fas fa-plus-circle"></i>
+                    Emitir certificado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-dashboard {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .dashboard-header h1 {
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-header p {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card i {
+        font-size: 2rem;
+        color: #3498db;
+        background: rgba(52,152,219,0.1);
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .stat-info h3 {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .stat-info p {
+        color: #7f8c8d;
+        margin: 0;
+    }
+
+    .admin-sections {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f2f5;
+    }
+
+    .section-header i {
+        font-size: 1.5rem;
+        color: #3498db;
+    }
+
+    .section-header h2 {
+        color: #2c3e50;
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .section-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .admin-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        color: #2c3e50;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .admin-link:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+    }
+
+    .admin-link i {
+        color: #3498db;
+    }
+
+    @media (max-width: 768px) {
+        .admin-dashboard {
+            padding: 1rem;
+        }
+
+        .dashboard-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-sections {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

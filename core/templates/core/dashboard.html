@@ -1,0 +1,17 @@
+{% extends "core/base.html" %}
+
+{% block title %}Mi Panel{% endblock %}
+
+{% block content %}
+    <h2>Mis Cursos</h2>
+    <div class="course-grid">
+        {% for course in cursos %}
+            <div class="course-card">
+                <h3><a href="{% url 'course_detail' course.pk %}">{{ course.titulo }}</a></h3>
+                <p>Accede al contenido de tu curso.</p>
+            </div>
+        {% empty %}
+            <p>Aún no has comprado ningún curso.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

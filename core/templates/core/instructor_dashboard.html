@@ -1,0 +1,337 @@
+{% extends "core/base.html" %}
+
+{% block title %}Panel de Instructor{% endblock %}
+
+{% block content %}
+<div class="instructor-dashboard">
+    <div class="dashboard-header">
+        <h1>Panel de Instructor</h1>
+        <p>Gestiona tus cursos y estudiantes</p>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <i class="fas fa-book"></i>
+            <div class="stat-info">
+                <h3>{{ cursos_count }}</h3>
+                <p>Cursos Activos</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-users"></i>
+            <div class="stat-info">
+                <h3>{{ estudiantes_count }}</h3>
+                <p>Estudiantes Totales</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-chart-line"></i>
+            <div class="stat-info">
+                <h3>{{ total_ingresos }}</h3>
+                <p>Ingresos Totales</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-actions">
+        <a href="{% url 'crear_curso' %}" class="action-button">
+            <i class="fas fa-plus"></i>
+            Crear Nuevo Curso
+        </a>
+        <a href="{% url 'ver_estadisticas' %}" class="action-button secondary">
+            <i class="fas fa-chart-bar"></i>
+            Ver Estadísticas
+        </a>
+    </div>
+
+    <div class="courses-section">
+        <h2>Mis Cursos</h2>
+        <div class="course-grid">
+            {% for curso in cursos %}
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>{{ curso.titulo }}</h3>
+                    <span class="course-type {{ curso.tipo }}">{{ curso.get_tipo_display }}</span>
+                </div>
+                <div class="course-info">
+                    <p>{{ curso.descripcion|truncatechars:100 }}</p>
+                    <div class="course-stats">
+                        <span><i class="fas fa-user-graduate"></i> {{ curso.estudiantes_count }} estudiantes</span>
+                        <span><i class="fas fa-star"></i> {{ curso.rating|default:"N/A" }}</span>
+                    </div>
+                </div>
+                <div class="course-actions">
+                    <a href="{% url 'editar_curso' curso.id %}" class="btn-edit">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="{% url 'ver_curso' curso.id %}" class="btn-view">
+                        <i class="fas fa-eye"></i> Ver
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-courses">
+                <i class="fas fa-book-open"></i>
+                <p>Aún no tienes cursos creados</p>
+                <a href="{% url 'crear_curso' %}" class="btn-create">Crear mi primer curso</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .instructor-dashboard {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .dashboard-header h1 {
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-header p {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .stat-card i {
+        font-size: 2rem;
+        color: #3498db;
+        background: rgba(52,152,219,0.1);
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .stat-info h3 {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .stat-info p {
+        color: #7f8c8d;
+        margin: 0;
+    }
+
+    .dashboard-actions {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .action-button {
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .action-button:not(.secondary) {
+        background: #3498db;
+        color: white;
+    }
+
+    .action-button.secondary {
+        background: #f8f9fa;
+        color: #2c3e50;
+    }
+
+    .action-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .courses-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .courses-section h2 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+    }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .course-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .course-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+    }
+
+    .course-header h3 {
+        color: #2c3e50;
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .course-type {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .course-type.grabado {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .course-type.en-vivo {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .course-info p {
+        color: #7f8c8d;
+        margin-bottom: 1rem;
+    }
+
+    .course-stats {
+        display: flex;
+        gap: 1rem;
+        color: #95a5a6;
+        font-size: 0.875rem;
+    }
+
+    .course-stats span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .course-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .course-actions a {
+        flex: 1;
+        text-align: center;
+        padding: 0.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .btn-view {
+        background: #f8f9fa;
+        color: #2c3e50;
+    }
+
+    .btn-edit:hover, .btn-view:hover {
+        transform: translateY(-2px);
+    }
+
+    .no-courses {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+    }
+
+    .no-courses i {
+        font-size: 3rem;
+        color: #95a5a6;
+        margin-bottom: 1rem;
+    }
+
+    .no-courses p {
+        color: #7f8c8d;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-create {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-create:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .instructor-dashboard {
+            padding: 1rem;
+        }
+
+        .dashboard-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-actions {
+            flex-direction: column;
+        }
+
+        .course-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ course.titulo }}{% endblock %}
+
+{% block content %}
+    <div class="course-card" style="max-width: 800px; margin: auto;">
+        <h2>{{ course.titulo }}</h2>
+        <p><strong>Instructor:</strong> {{ course.instructor.nombre_completo }}</p>
+        <p><strong>Descripción:</strong> {{ course.descripcion }}</p>
+        <p><strong>Precio:</strong> ${{ course.precio }}</p>
+        
+        <h3 style="margin-top: 2rem;">Módulos del Curso</h3>
+        <ul style="list-style: none; padding: 0;">
+            {% for modulo in course.modulos.all %}
+                <li style="background-color: #f8f9fa; padding: 0.75rem; border-radius: 5px; margin-bottom: 0.5rem;">{{ modulo.titulo }}</li>
+            {% empty %}
+                <li>No hay módulos para este curso.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

@@ -1,30 +1,11 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ title }} | Inicio</title>
-    <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
-      header { display: flex; align-items: center; gap: .75rem; }
-      .badge { font-size: .8rem; background: #0ea5e9; color: white; padding: .15rem .5rem; border-radius: .5rem; }
-      main { margin-top: 1.25rem; }
-      a.btn { display: inline-block; background: #16a34a; color: #fff; padding: .5rem .8rem; border-radius: .375rem; text-decoration: none; }
-      a.btn:hover { background: #15803d; }
-      .muted { color: #6b7280; font-size: .9rem; }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1 style="margin: 0;">Conecta Saber</h1>
-      <span class="badge">Django</span>
-    </header>
+{% extends "core/base.html" %}
 
-    <main>
-      <p class="muted">Proyecto listo. Esta es la página de inicio básica.</p>
-      <ul>
-        <li><a class="btn" href="/admin/">Ir al Admin</a></li>
-      </ul>
-    </main>
-  </body>
-</html>
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+    <div style="text-align: center; padding: 4rem 0;">
+        <h2>Bienvenido a Conecta Saber</h2>
+        <p style="font-size: 1.1rem; color: #6c757d;">Tu plataforma para aprender y enseñar en línea.</p>
+        <a href="{% url 'course_list' %}" class="btn">Ver Cursos</a>
+    </div>
+{% endblock %}
