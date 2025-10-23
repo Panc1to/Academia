@@ -1,0 +1,13 @@
+# Django stubs configuration
+# This helps VS Code recognize Django modules
+
+from typing import Any
+
+__all__ = [
+    'VERSION',
+    'get_version',
+]
+
+VERSION: tuple[int, int, int, str, int]
+
+def get_version(version: tuple[int, int, int, str, int] | None = None) -> str: ...

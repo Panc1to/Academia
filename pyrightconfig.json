@@ -1,0 +1,8 @@
+{
+    "typeCheckingMode": "basic",
+    "include": ["conecta_saber", "core"],
+    "venvPath": ".",
+    "venv": "conecta_saber/venv",
+    "pythonPlatform": "Windows",
+    "pythonVersion": "3.10"
+}

@@ -1,0 +1,14 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/conecta_saber/venv/Scripts/python.exe",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/conecta_saber"
+    ],
+    "python.analysis.typeShedPath": "${workspaceFolder}/conecta_saber/venv/Lib/typeshed",
+    "pylance.analysis.typeCheckingMode": "basic",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true
+    }
+}
