@@ -1,0 +1,228 @@
+{% extends "core/base.html" %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="page-header">
+        <h2>Panel de Administración</h2>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_usuarios }}</h3>
+                <p>Total Usuarios</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_instructores }}</h3>
+                <p>Instructores</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_estudiantes }}</h3>
+                <p>Estudiantes</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-book"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_cursos }}</h3>
+                <p>Total Cursos</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_compras }}</h3>
+                <p>Compras Realizadas</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_ingresos }}</h3>
+                <p>Ingresos Totales</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-sections">
+        <div class="section-card">
+            <div class="section-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3>Gestión de Usuarios</h3>
+            <p>Administra usuarios, instructores y estudiantes.</p>
+            <a href="{% url 'admin_users' %}" class="btn btn-primary">Ir a Usuarios</a>
+        </div>
+
+        <div class="section-card">
+            <div class="section-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h3>Gestión de Cursos</h3>
+            <p>Administra los cursos y su contenido.</p>
+            <a href="{% url 'admin_courses' %}" class="btn btn-primary">Ir a Cursos</a>
+        </div>
+
+        <div class="section-card">
+            <div class="section-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h3>Gestión de Compras</h3>
+            <p>Revisa y gestiona las transacciones.</p>
+            <a href="{% url 'admin_purchases' %}" class="btn btn-primary">Ir a Compras</a>
+        </div>
+
+        <div class="section-card">
+            <div class="section-icon">
+                <i class="fas fa-certificate"></i>
+            </div>
+            <h3>Gestión de Certificados</h3>
+            <p>Administra las plantillas y certificados emitidos.</p>
+            <a href="{% url 'admin_certificates' %}" class="btn btn-primary">Ir a Certificados</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    background: rgba(52,152,219,0.1);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.stat-icon i {
+    font-size: 2rem;
+    color: #3498db;
+}
+
+.stat-info h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #2c3e50;
+}
+
+.stat-info p {
+    margin: 0;
+    color: #7f8c8d;
+}
+
+.admin-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.section-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.section-card:hover {
+    transform: translateY(-5px);
+}
+
+.section-icon {
+    background: rgba(52,152,219,0.1);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.section-icon i {
+    font-size: 2.5rem;
+    color: #3498db;
+}
+
+.section-card h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.section-card p {
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-sections {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

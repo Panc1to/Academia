@@ -8,23 +8,42 @@ class Usuario(AbstractUser):
     es_estudiante = models.BooleanField(default=False)
     es_instructor = models.BooleanField(default=False)
     es_administrador = models.BooleanField(default=False)
+    titulo_especialidad = models.CharField(max_length=100, blank=True, null=True, help_text="Título o especialidad del instructor (ej: 'Profesor de Historia', 'Ingeniero en Sistemas')")
 
     def __str__(self):
         return f"{self.nombre_completo} ({self.username})"
 
 
 # ======= 2. Curso =======
+from django.utils.text import slugify
+
 class Curso(models.Model):
     instructor = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='cursos')
     titulo = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, blank=True)
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     tipo = models.CharField(
         max_length=20,
         choices=[('grabado', 'Grabado'), ('en vivo', 'En vivo')]
     )
+    estado = models.CharField(
+        max_length=20,
+        choices=[('activo', 'Activo'), ('inactivo', 'Inactivo')],
+        default='activo'
+    )
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.titulo)
+            # Asegurar que el slug sea único
+            counter = 1
+            while Curso.objects.filter(slug=self.slug).exists():
+                self.slug = f"{slugify(self.titulo)}-{counter}"
+                counter += 1
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.titulo

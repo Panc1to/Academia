@@ -1,0 +1,165 @@
+{% extends "core/base.html" %}
+
+{% block title %}Nueva Plantilla de Certificado{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="page-header">
+        <h2>Nueva Plantilla de Certificado</h2>
+    </div>
+
+    <div class="section">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="nombre">Nombre de la Plantilla</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" name="descripcion" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="archivo">Archivo de Plantilla (PDF)</label>
+                <input type="file" id="archivo" name="archivo" class="form-control" accept=".pdf" required>
+                <small class="text-muted">El archivo debe estar en formato PDF y contener marcadores para los campos variables.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="campos">Campos Variables</label>
+                <div id="campos-container">
+                    <div class="campo-row">
+                        <input type="text" name="campos[]" class="form-control" placeholder="Nombre del campo">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="addCampo()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <small class="text-muted">Agregue los campos que se reemplazarán en la plantilla.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="preview">Vista Previa</label>
+                <input type="file" id="preview" name="preview" class="form-control" accept="image/*" required>
+                <small class="text-muted">Imagen de vista previa para mostrar en el listado de plantillas.</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Guardar Plantilla</button>
+                <a href="{% url 'admin_certificates' %}" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.campo-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-outline {
+    background: none;
+    border: 1px solid #3498db;
+    color: #3498db;
+}
+
+.btn-outline:hover {
+    background-color: #3498db;
+    color: white;
+}
+
+.text-muted {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+</style>
+
+<script>
+function addCampo() {
+    const container = document.getElementById('campos-container');
+    const newRow = document.createElement('div');
+    newRow.className = 'campo-row';
+    newRow.innerHTML = `
+        <input type="text" name="campos[]" class="form-control" placeholder="Nombre del campo">
+        <button type="button" class="btn btn-outline btn-danger btn-sm" onclick="removeCampo(this)">
+            <i class="fas fa-minus"></i>
+        </button>
+    `;
+    container.appendChild(newRow);
+}
+
+function removeCampo(button) {
+    button.parentElement.remove();
+}
+</script>
+{% endblock %}

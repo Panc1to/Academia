@@ -10,8 +10,8 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.db import models
 from typing import Optional, cast
-from .models import Curso, Compra, Usuario
-from .forms import EstudianteRegistrationForm
+from .models import Curso, Compra, Usuario, Certificado
+from .forms import EstudianteRegistrationForm, InstructorCreationForm, CourseForm, AdminUserCreationForm
 
 def home(request: HttpRequest) -> HttpResponse:
 	"""Página de inicio simple.
@@ -228,6 +228,203 @@ def admin_dashboard(request: HttpRequest) -> HttpResponse:
     if not usuario.is_superuser:
         messages.error(request, 'No tienes permisos para acceder al panel de administración.')
         return redirect('home')
+        
+    # Obtener estadísticas generales
+    total_usuarios = Usuario.objects.count()
+    total_instructores = Usuario.objects.filter(es_instructor=True).count()
+    total_estudiantes = Usuario.objects.filter(es_estudiante=True).count()
+    total_cursos = Curso.objects.count()
+    total_compras = Compra.objects.filter(estado_pago='validado').count()
+    
+    # Calcular ingresos totales
+    total_ingresos = Compra.objects.filter(
+        estado_pago='validado'
+    ).aggregate(total=models.Sum('monto_pagado'))['total'] or 0
+
+    context = {
+        'total_usuarios': total_usuarios,
+        'total_instructores': total_instructores,
+        'total_estudiantes': total_estudiantes,
+        'total_cursos': total_cursos,
+        'total_compras': total_compras,
+        'total_ingresos': f"${total_ingresos:,.2f}",
+    }
+    
+    return render(request, 'core/admin/dashboard.html', context)
+
+@login_required
+def admin_users(request: HttpRequest) -> HttpResponse:
+    """Vista para la gestión de usuarios."""
+    if not request.user.is_superuser:
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('home')
+    
+    usuarios = Usuario.objects.all().order_by('date_joined')
+    estudiantes = usuarios.filter(es_estudiante=True)
+    instructores = usuarios.filter(es_instructor=True)
+    administradores = usuarios.filter(is_superuser=True)
+    
+    context = {
+        'usuarios': usuarios,
+        'total_usuarios': usuarios.count(),
+        'total_estudiantes': estudiantes.count(),
+        'total_instructores': instructores.count(),
+        'total_administradores': administradores.count(),
+        'estudiantes': estudiantes,
+        'instructores': instructores,
+        'administradores': administradores,
+    }
+    
+    return render(request, 'core/admin/users.html', context)
+
+@login_required
+def create_user(request: HttpRequest) -> HttpResponse:
+    """Vista para crear un nuevo usuario desde el panel de administración."""
+    if not request.user.is_superuser:
+        messages.error(request, 'No tienes permisos para crear usuarios.')
+        return redirect('admin_users')
+        
+    if request.method == 'POST':
+        form = AdminUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(
+                request,
+                f'Usuario {user.username} creado exitosamente como {form.cleaned_data["tipo_usuario"]}.'
+            )
+            return redirect('admin_users')
+    else:
+        form = AdminUserCreationForm()
+    
+    return render(request, 'core/admin/create_user.html', {'form': form})
+
+@login_required
+def admin_courses(request: HttpRequest) -> HttpResponse:
+    """Vista para la gestión de cursos."""
+    if not request.user.is_superuser:
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('home')
+    
+    cursos = Curso.objects.all().order_by('-fecha_creacion')
+    total_estudiantes = Compra.objects.filter(estado_pago='validado').values('estudiante').distinct().count()
+    total_certificados = Certificado.objects.count()
+    
+    context = {
+        'cursos': cursos,
+        'total_cursos': cursos.count(),
+        'total_estudiantes_inscritos': total_estudiantes,
+        'total_certificados': total_certificados,
+    }
+    
+    return render(request, 'core/admin/courses.html', context)
+
+@login_required
+def edit_course(request: HttpRequest, pk: int) -> HttpResponse:
+    """Vista para editar un curso existente."""
+    if not request.user.is_superuser:
+        messages.error(request, 'No tienes permisos para editar cursos.')
+        return redirect('admin_courses')
+        
+    curso = get_object_or_404(Curso, pk=pk)
+    
+    if request.method == 'POST':
+        form = CourseForm(request.POST, instance=curso)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Curso actualizado exitosamente.')
+            return redirect('admin_courses')
+    else:
+        form = CourseForm(instance=curso)
+    
+    return render(request, 'core/admin/edit_course.html', {
+        'form': form,
+        'curso': curso
+    })
+
+@login_required
+def delete_course(request: HttpRequest, pk: int) -> HttpResponse:
+    """Vista para eliminar un curso."""
+    if not request.user.is_superuser:
+        messages.error(request, 'No tienes permisos para eliminar cursos.')
+        return redirect('admin_courses')
+        
+    curso = get_object_or_404(Curso, pk=pk)
+    
+    if request.method == 'POST':
+        curso.delete()
+        messages.success(request, 'Curso eliminado exitosamente.')
+        return redirect('admin_courses')
+    
+    return render(request, 'core/admin/delete_course.html', {'curso': curso})
+
+@login_required
+def admin_purchases(request: HttpRequest) -> HttpResponse:
+    """Vista para la gestión de compras."""
+    if not request.user.is_superuser:
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('home')
+    
+    compras = Compra.objects.all().order_by('-fecha_compra')
+    total_ingresos = compras.filter(estado_pago='validado').aggregate(
+        total=models.Sum('monto_pagado')
+    )['total'] or 0
+    
+    context = {
+        'compras': compras,
+        'total_compras': compras.count(),
+        'compras_validadas': compras.filter(estado_pago='validado').count(),
+        'compras_pendientes': compras.filter(estado_pago='pendiente').count(),
+        'total_ingresos': f"${total_ingresos:,.2f}",
+    }
+    
+    return render(request, 'core/admin/purchases.html', context)
+
+@login_required
+def admin_certificates(request: HttpRequest) -> HttpResponse:
+    """Vista para la gestión de certificados."""
+    if not request.user.is_superuser:
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('home')
+    
+    certificados = Certificado.objects.all().order_by('-fecha_emision')
+    
+    context = {
+        'certificados': certificados,
+        'total_certificados': certificados.count(),
+    }
+    
+    return render(request, 'core/admin/certificates.html', context)
+
+@login_required
+def create_course(request: HttpRequest) -> HttpResponse:
+    """Vista para crear un nuevo curso."""
+    if not request.user.is_superuser:
+        messages.error(request, 'No tienes permisos para crear cursos.')
+        return redirect('admin_courses')
+        
+    if request.method == 'POST':
+        form = CourseForm(request.POST)
+        if form.is_valid():
+            curso = form.save(commit=False)
+            curso.instructor = request.user
+            curso.save()
+            messages.success(request, 'Curso creado exitosamente.')
+            return redirect('admin_courses')
+    else:
+        form = CourseForm()
+    
+    return render(request, 'core/admin/create_course.html', {'form': form})
+    if request.method == 'POST':
+        form = InstructorCreationForm(request.POST)
+        if form.is_valid():
+            instructor = form.save()
+            messages.success(
+                request,
+                f'Instructor creado exitosamente. Usuario: {instructor.username}, Contraseña: {request.POST["password1"]}'
+            )
+            return redirect('admin_dashboard')
+    else:
+        form = InstructorCreationForm()
 
     # Obtener estadísticas
     total_usuarios = Usuario.objects.count()
@@ -247,7 +444,8 @@ def admin_dashboard(request: HttpRequest) -> HttpResponse:
         'total_estudiantes': total_estudiantes,
         'total_cursos': total_cursos,
         'total_compras': total_compras,
-        'total_ingresos': f"${total_ingresos:,.2f}"
+        'total_ingresos': f"${total_ingresos:,.2f}",
+        'form': form
     }
     
     return render(request, 'core/admin_dashboard.html', context)

@@ -1,0 +1,234 @@
+{% extends "core/base.html" %}
+
+{% block title %}Crear Nuevo Usuario{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="page-header">
+        <h2>Crear Nuevo Usuario</h2>
+    </div>
+
+    <div class="section">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.nombre_completo.id_for_label }}">{{ form.nombre_completo.label }}</label>
+                {{ form.nombre_completo }}
+                {% if form.nombre_completo.errors %}
+                <div class="error-message">
+                    {{ form.nombre_completo.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                {{ form.username }}
+                {% if form.username.help_text %}
+                <small class="help-text">{{ form.username.help_text }}</small>
+                {% endif %}
+                {% if form.username.errors %}
+                <div class="error-message">
+                    {{ form.username.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="error-message">
+                    {{ form.email.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.tipo_usuario.id_for_label }}">{{ form.tipo_usuario.label }}</label>
+                {{ form.tipo_usuario }}
+                {% if form.tipo_usuario.errors %}
+                <div class="error-message">
+                    {{ form.tipo_usuario.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group" id="especialidad-group" style="display: none;">
+                <label for="{{ form.titulo_especialidad.id_for_label }}">{{ form.titulo_especialidad.label }}</label>
+                {{ form.titulo_especialidad }}
+                {% if form.titulo_especialidad.help_text %}
+                <small class="help-text">{{ form.titulo_especialidad.help_text }}</small>
+                {% endif %}
+                {% if form.titulo_especialidad.errors %}
+                <div class="error-message">
+                    {{ form.titulo_especialidad.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                {{ form.password1 }}
+                {% if form.password1.help_text %}
+                <small class="help-text">{{ form.password1.help_text }}</small>
+                {% endif %}
+                {% if form.password1.errors %}
+                <div class="error-message">
+                    {{ form.password1.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                {{ form.password2 }}
+                {% if form.password2.help_text %}
+                <small class="help-text">{{ form.password2.help_text }}</small>
+                {% endif %}
+                {% if form.password2.errors %}
+                <div class="error-message">
+                    {{ form.password2.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                <a href="{% url 'admin_users' %}" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.help-text {
+    display: block;
+    margin-top: 0.25rem;
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #dc2626;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-outline {
+    background: none;
+    border: 1px solid #3498db;
+    color: #3498db;
+}
+
+.btn-outline:hover {
+    background-color: #3498db;
+    color: white;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tipoUsuarioSelect = document.getElementById('{{ form.tipo_usuario.id_for_label }}');
+    const especialidadGroup = document.getElementById('especialidad-group');
+
+    function toggleEspecialidad() {
+        if (tipoUsuarioSelect.value === 'instructor') {
+            especialidadGroup.style.display = 'block';
+        } else {
+            especialidadGroup.style.display = 'none';
+        }
+    }
+
+    tipoUsuarioSelect.addEventListener('change', toggleEspecialidad);
+    toggleEspecialidad(); // Ejecutar al cargar la página
+});
+</script>
+{% endblock %}

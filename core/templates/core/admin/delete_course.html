@@ -1,0 +1,160 @@
+{% extends "core/base.html" %}
+
+{% block title %}Eliminar Curso{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="page-header">
+        <h2>Eliminar Curso</h2>
+    </div>
+
+    <div class="section">
+        <div class="confirmation-message">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3>¿Está seguro que desea eliminar el curso "{{ curso.titulo }}"?</h3>
+            <p>Esta acción no se puede deshacer y eliminará:</p>
+            <ul>
+                <li>Todo el contenido del curso</li>
+                <li>Los registros de estudiantes inscritos</li>
+                <li>Las evaluaciones asociadas</li>
+                <li>Los certificados emitidos</li>
+            </ul>
+        </div>
+
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Sí, Eliminar Curso
+                </button>
+                <a href="{% url 'admin_courses' %}" class="btn btn-outline">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.confirmation-message {
+    max-width: 500px;
+    margin: 0 auto 2rem;
+}
+
+.warning-icon {
+    color: #e74c3c;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.confirmation-message h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.confirmation-message p {
+    color: #7f8c8d;
+    margin-bottom: 1rem;
+}
+
+.confirmation-message ul {
+    text-align: left;
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+    padding-left: 2rem;
+}
+
+.confirmation-message ul li {
+    margin-bottom: 0.5rem;
+}
+
+.delete-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-outline {
+    background: none;
+    border: 1px solid #3498db;
+    color: #3498db;
+}
+
+.btn-outline:hover {
+    background-color: #3498db;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 1rem;
+    }
+    
+    .section {
+        padding: 1rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
