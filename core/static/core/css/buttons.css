@@ -1,0 +1,43 @@
+/* Estilos para botones */
+.btn-enroll {
+    background-color: #3498db;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.btn-enroll:hover {
+    background-color: #2980b9;
+}
+
+.btn-access {
+    background-color: #2ecc71;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.btn-access:hover {
+    background-color: #27ae60;
+}
+
+.btn-login {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    border: 1px solid #dee2e6;
+}
+
+.btn-login:hover {
+    background-color: #e9ecef;
+}

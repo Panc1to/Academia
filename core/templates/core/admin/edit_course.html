@@ -8,8 +8,16 @@
         <h2>Editar Curso</h2>
     </div>
 
+    <!-- Notification container -->
+    <div id="notification" class="notification" style="display: none;">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="notification-message"></span>
+        </div>
+    </div>
+
     <div class="section">
-        <form method="post" class="course-form">
+        <form method="post" class="course-form" id="courseForm">
             {% csrf_token %}
             
             {% for field in form %}
@@ -40,6 +48,68 @@
         </form>
     </div>
 </div>
+
+<style>
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    transform: translateX(150%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-content {
+    background-color: #4caf50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-content i {
+    font-size: 1.2em;
+}
+</style>
+
+<script>
+document.getElementById('courseForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Submit the form
+    fetch(this.action, {
+        method: 'POST',
+        body: new FormData(this),
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.text())
+    .then(html => {
+        // Show notification
+        const notification = document.getElementById('notification');
+        const message = document.getElementById('notification-message');
+        message.textContent = 'Curso actualizado exitosamente';
+        notification.style.display = 'block';
+        setTimeout(() => notification.classList.add('show'), 100);
+
+        // Hide notification after 3 seconds and redirect
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                window.location.href = "{% url 'admin_courses' %}";
+            }, 300);
+        }, 3000);
+    });
+});
+</script>
 
 <style>
 .admin-content {

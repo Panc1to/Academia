@@ -23,7 +23,7 @@
                 </div>
             {% endfor %}
         </div>
-    {% endif %}        <form method="post" class="login-form">
+    {% endif %}        <form method="post" class="login-form" id="loginForm" autocomplete="off">
             {% csrf_token %}
             <div class="form-group">
                 <div class="input-group">
@@ -81,7 +81,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background-color: var(--background-color);
         padding: 2rem;
     }
 
@@ -298,6 +298,24 @@
 </style>
 
 <script>
+// Limpiar el formulario cuando se carga la página
+window.addEventListener('pageshow', function(event) {
+    // Se activa cuando se navega hacia atrás
+    if (event.persisted) {
+        document.getElementById('loginForm').reset();
+    }
+});
+
+// Limpiar el formulario cuando se abandona la página
+window.addEventListener('unload', function() {
+    // Limpiar el formulario
+    document.getElementById('loginForm').reset();
+    
+    // Limpiar cualquier dato almacenado
+    localStorage.removeItem('loginFormData');
+    sessionStorage.removeItem('loginFormData');
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     // Toggle password visibility
     const togglePassword = document.querySelector('.toggle-password');

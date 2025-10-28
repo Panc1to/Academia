@@ -1,4 +1,5 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block title %}Panel de Administración{% endblock %}
 
@@ -8,47 +9,59 @@
         <h2>Panel de Administración</h2>
     </div>
 
-    <div class="stats-grid">
+    <div class="stats-container">
         <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-users"></i></div>
-            <div class="stat-info">
-                <h3>{{ total_usuarios }}</h3>
-                <p>Total Usuarios</p>
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ total_usuarios }}</h3>
+                <p class="stat-label">Total Usuarios</p>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-            <div class="stat-info">
-                <h3>{{ total_instructores }}</h3>
-                <p>Instructores</p>
+            <div class="stat-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ total_instructores }}</h3>
+                <p class="stat-label">Instructores</p>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
-            <div class="stat-info">
-                <h3>{{ total_estudiantes }}</h3>
-                <p>Estudiantes</p>
+            <div class="stat-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ total_estudiantes }}</h3>
+                <p class="stat-label">Estudiantes</p>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-book"></i></div>
-            <div class="stat-info">
-                <h3>{{ total_cursos }}</h3>
-                <p>Total Cursos</p>
+            <div class="stat-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ total_cursos }}</h3>
+                <p class="stat-label">Total Cursos</p>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-            <div class="stat-info">
-                <h3>{{ total_compras }}</h3>
-                <p>Compras Realizadas</p>
+            <div class="stat-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ total_compras }}</h3>
+                <p class="stat-label">Compras Realizadas</p>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-            <div class="stat-info">
-                <h3>{{ total_ingresos }}</h3>
-                <p>Ingresos Totales</p>
+            <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ total_ingresos }}</h3>
+                <p class="stat-label">Ingresos Totales</p>
             </div>
         </div>
     </div>

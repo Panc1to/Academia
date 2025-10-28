@@ -11,7 +11,9 @@ class Usuario(AbstractUser):
     titulo_especialidad = models.CharField(max_length=100, blank=True, null=True, help_text="Título o especialidad del instructor (ej: 'Profesor de Historia', 'Ingeniero en Sistemas')")
 
     def __str__(self):
-        return f"{self.nombre_completo} ({self.username})"
+        if self.es_instructor and self.titulo_especialidad:
+            return f"{self.nombre_completo} - {self.titulo_especialidad}"
+        return f"{self.nombre_completo}"
 
 
 # ======= 2. Curso =======
@@ -32,6 +34,8 @@ class Curso(models.Model):
         choices=[('activo', 'Activo'), ('inactivo', 'Inactivo')],
         default='activo'
     )
+    link_material = models.URLField(blank=True, null=True, help_text="Link opcional para material adicional del curso")
+    archivo_pdf = models.FileField(upload_to='cursos/pdfs/', blank=True, null=True, help_text="Archivo PDF opcional para el curso")
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
@@ -117,12 +121,36 @@ class Evaluacion(models.Model):
         return f"Evaluación - {self.titulo}"
 
 
-# ======= 7. Certificado =======
+# ======= 7. Plantilla de Certificado =======
+import os
+from django.utils.text import slugify
+
+class PlantillaCertificado(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True)
+    archivo = models.FileField(upload_to='certificados/plantillas/')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def delete(self, *args, **kwargs):
+        # Delete the file when the model instance is deleted
+        if self.archivo:
+            if os.path.isfile(self.archivo.path):
+                os.remove(self.archivo.path)
+        super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        ordering = ['-fecha_creacion']
+
+# ======= 8. Certificado =======
 class Certificado(models.Model):
     estudiante = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='certificados')
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='certificados')
     fecha_emision = models.DateField(auto_now_add=True)
     codigo_unico_pdf = models.CharField(max_length=100, unique=True)
+    archivo = models.FileField(upload_to='certificados/emitidos/')
 
     def __str__(self):
         return f"Certificado - {self.estudiante.nombre_completo} ({self.curso.titulo})"

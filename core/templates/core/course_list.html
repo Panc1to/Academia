@@ -7,10 +7,51 @@
     <div class="course-grid">
         {% for course in courses %}
             <div class="course-card">
-                <h3><a href="{% url 'course_detail' course.pk %}">{{ course.titulo }}</a></h3>
-                <p>{{ course.descripcion|truncatewords:20 }}</p>
-                <p><strong>Instructor:</strong> {{ course.instructor.nombre_completo }}</p>
-                <p><strong>Precio:</strong> ${{ course.precio }}</p>
+                <div class="course-header">
+                    <h3>{{ course.titulo }}</h3>
+                    <span class="course-type {{ course.tipo }}">{{ course.get_tipo_display }}</span>
+                </div>
+                
+                <div class="course-body">
+                    <p class="description">{{ course.descripcion|truncatewords:30 }}</p>
+                    <div class="instructor-info">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>{{ course.instructor.nombre_completo }}</span>
+                    </div>
+                </div>
+
+                <div class="course-footer">
+                    <div class="price">${{ course.precio }}</div>
+                    {% if user.is_authenticated %}
+                        {% if user.es_estudiante %}
+                            {% if course in user_courses %}
+                                <a href="{% url 'ver_contenido' course.pk %}" class="btn-access">
+                                    <i class="fas fa-play-circle"></i>
+                                    Ver Contenido
+                                </a>
+                            {% else %}
+                                <a href="{% url 'pagar_curso' course.pk %}" class="btn-enroll">
+                                    <div class="btn-content">
+                                        <div class="btn-main">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            <span>Comprar Curso</span>
+                                        </div>
+                                        <div class="btn-price">
+                                            <span>${{ course.precio }}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <span class="instructor-note">Acceso solo para estudiantes</span>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'pagar_curso' course.pk %}" class="btn-login">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Iniciar Sesión para Comprar
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         {% empty %}
             <p>No hay cursos disponibles en este momento.</p>

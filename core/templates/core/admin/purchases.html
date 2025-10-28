@@ -41,9 +41,8 @@
                         <th>ID Compra</th>
                         <th>Estudiante</th>
                         <th>Curso</th>
-                        <th>Precio</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
+                        <th>Precio Pagado</th>
+                        <th>Fecha de Compra</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -58,32 +57,22 @@
                             </div>
                         </td>
                         <td>{{ compra.curso.titulo }}</td>
-                        <td>${{ compra.precio|floatformat:2 }}</td>
-                        <td>
-                            <span class="status-badge {{ compra.estado|lower }}">
-                                {{ compra.get_estado_display }}
-                            </span>
-                        </td>
-                        <td>{{ compra.created_at|date:"d/m/Y H:i" }}</td>
+                        <td>${{ compra.monto_pagado|floatformat:2 }}</td>
+                        <td>{{ compra.fecha_compra|date:"d/m/Y H:i" }}</td>
                         <td>
                             <div class="action-buttons">
                                 <a href="#" class="action-link" title="Ver detalles" onclick="showPurchaseDetails('{{ compra.id }}')">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                {% if compra.estado == 'pendiente' %}
-                                <a href="#" class="action-link text-success" title="Aprobar" onclick="approvePurchase('{{ compra.id }}')">
-                                    <i class="fas fa-check"></i>
+                                <a href="{% url 'download_receipt' compra.id %}" class="action-link text-success" title="Descargar Comprobante">
+                                    <i class="fas fa-file-download"></i>
                                 </a>
-                                <a href="#" class="action-link text-danger" title="Rechazar" onclick="rejectPurchase('{{ compra.id }}')">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                                {% endif %}
                             </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center">No hay compras registradas</td>
+                        <td colspan="6" class="text-center">No hay compras registradas</td>
                     </tr>
                     {% endfor %}
                 </tbody>

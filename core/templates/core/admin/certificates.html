@@ -3,6 +3,7 @@
 {% block title %}Gestión de Certificados{% endblock %}
 
 {% block content %}
+{% csrf_token %}
 <div class="admin-content">
     <div class="page-header">
         <h2>Gestión de Certificados</h2>
@@ -39,27 +40,33 @@
 
     <div class="section">
         <h3>Plantillas de Certificados</h3>
+        {% if plantillas %}
         <div class="template-grid">
             {% for plantilla in plantillas %}
             <div class="template-card">
                 <div class="template-preview">
-                    <img src="{{ plantilla.preview.url }}" alt="{{ plantilla.nombre }}">
+                    <i class="fas fa-file-pdf fa-5x"></i>
                 </div>
                 <div class="template-info">
                     <h4>{{ plantilla.nombre }}</h4>
-                    <p class="text-muted">{{ plantilla.descripcion }}</p>
+                    <p class="text-muted">{{ plantilla.descripcion|default:"Sin descripción" }}</p>
+                    <p class="text-muted"><small>Creado: {{ plantilla.fecha_creacion|date:"d/m/Y" }}</small></p>
                     <div class="template-actions">
-                        <a href="{% url 'edit_certificate_template' plantilla.id %}" class="btn btn-outline">
-                            <i class="fas fa-edit"></i> Editar
+                        <a href="{{ plantilla.archivo.url }}" class="btn btn-outline" target="_blank">
+                            <i class="fas fa-eye"></i> Ver PDF
                         </a>
-                        <button class="btn btn-outline btn-danger" onclick="deleteTemplate('{{ plantilla.id }}')">
-                            <i class="fas fa-trash"></i>
+                        <a href="{% url 'admin_certificates' %}" class="btn btn-outline btn-success">
+                            <i class="fas fa-certificate"></i> Usar
+                        </a>
+                        <button class="btn btn-outline btn-danger" onclick="deleteTemplate({{ plantilla.id }})">
+                            <i class="fas fa-trash"></i> Eliminar
                         </button>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
 
     <div class="section">
@@ -95,9 +102,6 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <a href="{{ certificado.archivo.url }}" class="action-link" title="Descargar" target="_blank">
-                                    <i class="fas fa-download"></i>
-                                </a>
                                 <a href="#" class="action-link" title="Ver" onclick="previewCertificate('{{ certificado.id }}')">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -201,17 +205,17 @@
 
 .template-preview {
     position: relative;
-    padding-top: 56.25%;
-    overflow: hidden;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
 }
 
-.template-preview img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.template-preview i {
+    color: white;
+    opacity: 0.9;
 }
 
 .template-info {
@@ -301,6 +305,16 @@
     color: white;
 }
 
+.btn-outline.btn-success {
+    border-color: #2ecc71;
+    color: #2ecc71;
+}
+
+.btn-outline.btn-success:hover {
+    background-color: #2ecc71;
+    color: white;
+}
+
 .table-responsive {
     overflow-x: auto;
 }
@@ -350,16 +364,23 @@
 <script>
 function deleteTemplate(templateId) {
     if (confirm('¿Está seguro de que desea eliminar esta plantilla? Esta acción no se puede deshacer.')) {
-        fetch(`/certificates/templates/${templateId}/delete/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCsrfToken(),
-            },
-        }).then(response => {
-            if (response.ok) {
-                location.reload();
-            }
-        });
+        // Crear formulario para enviar POST request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/administracion/certificados/plantilla/${templateId}/eliminar/`;
+        
+        // Agregar token CSRF
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken.value;
+            form.appendChild(csrfInput);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 
@@ -383,7 +404,8 @@ function resendCertificate(certificateId) {
 }
 
 function getCsrfToken() {
-    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    return csrfToken ? csrfToken.value : '';
 }
 </script>
 {% endblock %}

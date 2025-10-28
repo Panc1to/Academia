@@ -1,0 +1,182 @@
+{% extends "core/base.html" %}
+
+{% block title %}Eliminar Curso{% endblock %}
+
+{% block content %}
+<div class="delete-course-container">
+    <div class="confirmation-card">
+        <div class="warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        
+        <h1>¿Estás seguro?</h1>
+        <p class="warning-text">Estás a punto de eliminar el curso:</p>
+        
+        <div class="course-info">
+            <h3>{{ curso.titulo }}</h3>
+            <p><strong>Tipo:</strong> {{ curso.get_tipo_display }}</p>
+            <p><strong>Precio:</strong> ${{ curso.precio }}</p>
+        </div>
+        
+        <div class="warning-details">
+            <p><i class="fas fa-info-circle"></i> Esta acción no se puede deshacer.</p>
+            <p><i class="fas fa-users"></i> Los estudiantes inscritos perderán acceso al curso.</p>
+        </div>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="form-actions">
+                <a href="{% url 'instructor_dashboard' %}" class="btn-cancel">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </a>
+                <button type="submit" class="btn-delete">
+                    <i class="fas fa-trash"></i>
+                    Sí, Eliminar Curso
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .delete-course-container {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 2rem;
+    }
+
+    .confirmation-card {
+        background: white;
+        border-radius: 15px;
+        padding: 3rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .warning-icon {
+        font-size: 4rem;
+        color: #f39c12;
+        margin-bottom: 1.5rem;
+    }
+
+    .confirmation-card h1 {
+        color: #2c3e50;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .warning-text {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .course-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border-left: 4px solid #e74c3c;
+    }
+
+    .course-info h3 {
+        color: #2c3e50;
+        margin: 0 0 1rem 0;
+    }
+
+    .course-info p {
+        margin: 0.5rem 0;
+        color: #555;
+    }
+
+    .warning-details {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .warning-details p {
+        margin: 0.5rem 0;
+        color: #856404;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .warning-details i {
+        color: #ffc107;
+    }
+
+    .delete-form {
+        margin-top: 2rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .btn-cancel,
+    .btn-delete {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-cancel {
+        background: #f8f9fa;
+        color: #2c3e50;
+        border: 1px solid #dee2e6;
+    }
+
+    .btn-delete {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    .btn-delete:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .delete-course-container {
+            margin: 1rem;
+            padding: 1rem;
+        }
+
+        .confirmation-card {
+            padding: 2rem 1rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-cancel,
+        .btn-delete {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}

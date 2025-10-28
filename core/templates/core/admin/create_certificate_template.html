@@ -8,48 +8,49 @@
         <h2>Nueva Plantilla de Certificado</h2>
     </div>
 
+    <div id="messages-container" class="message-container" style="display: none;">
+    </div>
+
     <div class="section">
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" id="certificateForm">
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="nombre">Nombre de la Plantilla</label>
-                <input type="text" id="nombre" name="nombre" class="form-control" required>
+                <label for="nombre">Nombre de la Plantilla *</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required
+                       placeholder="Ej: Certificado de Finalización - Curso Básico"
+                       maxlength="100">
+                <small class="text-muted">Nombre identificativo que ayude a reconocer la plantilla (máx. 100 caracteres)</small>
             </div>
 
             <div class="form-group">
                 <label for="descripcion">Descripción</label>
-                <textarea id="descripcion" name="descripcion" class="form-control" rows="3"></textarea>
+                <textarea id="descripcion" name="descripcion" class="form-control" rows="3"
+                          placeholder="Describe el propósito y características de esta plantilla..."></textarea>
+                <small class="text-muted">Agrega detalles sobre cuándo y cómo se usará esta plantilla (opcional)</small>
             </div>
 
             <div class="form-group">
-                <label for="archivo">Archivo de Plantilla (PDF)</label>
-                <input type="file" id="archivo" name="archivo" class="form-control" accept=".pdf" required>
-                <small class="text-muted">El archivo debe estar en formato PDF y contener marcadores para los campos variables.</small>
-            </div>
-
-            <div class="form-group">
-                <label for="campos">Campos Variables</label>
-                <div id="campos-container">
-                    <div class="campo-row">
-                        <input type="text" name="campos[]" class="form-control" placeholder="Nombre del campo">
-                        <button type="button" class="btn btn-outline btn-sm" onclick="addCampo()">
-                            <i class="fas fa-plus"></i>
-                        </button>
+                <label for="archivo">Archivo del Certificado (PDF) *</label>
+                <div class="file-upload">
+                    <input type="file" id="archivo" name="archivo" class="form-control" accept=".pdf" required
+                           onchange="validateFile(this)">
+                    <div id="file-preview" class="file-preview">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Ningún archivo seleccionado</span>
                     </div>
                 </div>
-                <small class="text-muted">Agregue los campos que se reemplazarán en la plantilla.</small>
-            </div>
-
-            <div class="form-group">
-                <label for="preview">Vista Previa</label>
-                <input type="file" id="preview" name="preview" class="form-control" accept="image/*" required>
-                <small class="text-muted">Imagen de vista previa para mostrar en el listado de plantillas.</small>
+                <small class="text-muted">Solo se permiten archivos PDF. Tamaño máximo recomendado: 5MB.</small>
+                <div id="file-error" class="error-message" style="display: none;"></div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Guardar Plantilla</button>
-                <a href="{% url 'admin_certificates' %}" class="btn btn-outline">Cancelar</a>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-save"></i> Guardar Plantilla
+                </button>
+                <a href="{% url 'admin_certificates' %}" class="btn btn-outline">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
             </div>
         </form>
     </div>
@@ -81,20 +82,32 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
+    color: #2c3e50;
 }
 
 .form-control {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.75rem;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
+    transition: border-color 0.3s ease;
 }
 
-.campo-row {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
+.form-control:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52,152,219,0.1);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.5rem;
+}
+
+.text-muted {
+    color: #6c757d;
+    font-size: 0.875rem;
 }
 
 .form-actions {
@@ -105,11 +118,78 @@
     border-top: 1px solid #eee;
 }
 
+.file-upload {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.file-preview {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px dashed #ced4da;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.file-preview i {
+    font-size: 1.5rem;
+    color: #e74c3c;
+}
+
+.file-preview small {
+    color: #6c757d;
+    margin-left: auto;
+}
+
+.error-message {
+    color: #e74c3c;
+    background-color: #fde8e6;
+    padding: 0.75rem;
+    border-radius: 5px;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-message:before {
+    content: "⚠";
+    font-size: 1.2em;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message-container {
+    margin-top: 1rem;
+}
+
 .btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1.5rem;
     border-radius: 5px;
     text-decoration: none;
     font-weight: 500;
@@ -125,6 +205,7 @@
 
 .btn-primary:hover {
     background-color: #2980b9;
+    transform: translateY(-1px);
 }
 
 .btn-outline {
@@ -137,29 +218,77 @@
     background-color: #3498db;
     color: white;
 }
-
-.text-muted {
-    color: #6c757d;
-    font-size: 0.875rem;
-}
 </style>
 
 <script>
-function addCampo() {
-    const container = document.getElementById('campos-container');
-    const newRow = document.createElement('div');
-    newRow.className = 'campo-row';
-    newRow.innerHTML = `
-        <input type="text" name="campos[]" class="form-control" placeholder="Nombre del campo">
-        <button type="button" class="btn btn-outline btn-danger btn-sm" onclick="removeCampo(this)">
-            <i class="fas fa-minus"></i>
-        </button>
-    `;
-    container.appendChild(newRow);
+function validateFile(input) {
+    const file = input.files[0];
+    const filePreview = document.getElementById('file-preview');
+    
+    if (file) {
+        if (!file.type.includes('pdf')) {
+            showMessage('Por favor, seleccione un archivo PDF válido', 'error');
+            input.value = '';
+            filePreview.innerHTML = '<i class="fas fa-file-pdf"></i><span>Ningún archivo seleccionado</span>';
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            showMessage('El archivo es demasiado grande. Por favor, use un archivo menor a 5MB', 'error');
+            input.value = '';
+            filePreview.innerHTML = '<i class="fas fa-file-pdf"></i><span>Ningún archivo seleccionado</span>';
+            return;
+        }
+
+        filePreview.innerHTML = `
+            <i class="fas fa-file-pdf"></i>
+            <span>${file.name}</span>
+            <small>(${formatFileSize(file.size)})</small>
+        `;
+    } else {
+        filePreview.innerHTML = '<i class="fas fa-file-pdf"></i><span>Ningún archivo seleccionado</span>';
+    }
 }
 
-function removeCampo(button) {
-    button.parentElement.remove();
+function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' bytes';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(1) + ' MB';
 }
+
+function showMessage(message, type) {
+    const messagesContainer = document.getElementById('messages-container');
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    
+    // Remove any existing messages
+    messagesContainer.innerHTML = '';
+    
+    // Create new message
+    const alertHTML = `
+        <div class="alert ${alertClass} fade-in">
+            <i class="fas ${icon}"></i>
+            ${message}
+        </div>
+    `;
+    
+    messagesContainer.innerHTML = alertHTML;
+    messagesContainer.style.display = 'block';
+    
+    // Scroll to message if it's not in view
+    const rect = messagesContainer.getBoundingClientRect();
+    if (rect.top < 0 || rect.bottom > window.innerHeight) {
+        messagesContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+// Reset form on page load (for back navigation)
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        document.getElementById('certificateForm').reset();
+        document.getElementById('file-preview').innerHTML = '<i class="fas fa-file-pdf"></i><span>Ningún archivo seleccionado</span>';
+        document.getElementById('messages-container').style.display = 'none';
+    }
+});
 </script>
 {% endblock %}

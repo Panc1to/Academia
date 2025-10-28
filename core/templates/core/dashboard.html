@@ -3,15 +3,247 @@
 {% block title %}Mi Panel{% endblock %}
 
 {% block content %}
-    <h2>Mis Cursos</h2>
-    <div class="course-grid">
-        {% for course in cursos %}
-            <div class="course-card">
-                <h3><a href="{% url 'course_detail' course.pk %}">{{ course.titulo }}</a></h3>
-                <p>Accede al contenido de tu curso.</p>
-            </div>
-        {% empty %}
-            <p>Aún no has comprado ningún curso.</p>
-        {% endfor %}
+<div class="student-dashboard">
+    <div class="dashboard-header">
+        <h1>Mis Cursos</h1>
+        <p>Accede al contenido de tus cursos comprados</p>
     </div>
+
+    <div class="courses-section">
+        {% if cursos %}
+        <div class="course-grid">
+            {% for course in cursos %}
+            <div class="course-card">
+                <div class="course-header">
+                    <h3>{{ course.titulo }}</h3>
+                    <span class="course-type {{ course.tipo }}">{{ course.get_tipo_display }}</span>
+                </div>
+                <div class="course-info">
+                    <p>{{ course.descripcion|truncatechars:120 }}</p>
+                    <p class="course-instructor">
+                        <i class="fas fa-user"></i> {{ course.instructor.nombre_completo }}
+                    </p>
+                </div>
+                <div class="course-actions">
+                    <a href="{% url 'ver_contenido' course.pk %}" class="btn-access">
+                        <i class="fas fa-play-circle"></i>
+                        Acceder al Contenido
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-courses">
+            <i class="fas fa-book-open"></i>
+            <h3>Aún no has comprado ningún curso</h3>
+            <p>Explora nuestro catálogo y comienza a aprender</p>
+            <a href="{% url 'course_list' %}" class="btn-explore">
+                <i class="fas fa-search"></i>
+                Ver Cursos Disponibles
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* Estilos del Dashboard de Estudiantes - v2 */
+    .student-dashboard {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .dashboard-header h1 {
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-header p {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+    }
+
+    .courses-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+
+    .course-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        border-color: #3498db;
+    }
+
+    .course-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .course-header h3 {
+        color: #2c3e50;
+        margin: 0;
+        font-size: 1.3rem;
+        flex: 1;
+    }
+
+    .course-type {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .course-type.grabado {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .course-type.en-vivo {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .course-info {
+        margin-bottom: 1.5rem;
+        flex: 1;
+    }
+
+    .course-info p {
+        color: #7f8c8d;
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
+    }
+
+    .course-instructor {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #95a5a6 !important;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .course-instructor i {
+        color: #3498db;
+    }
+
+    .course-actions {
+        padding-top: 1rem;
+        border-top: 1px solid #dee2e6;
+        margin-top: auto;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .btn-access {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: auto;
+        font-size: 0.813rem;
+    }
+
+    .btn-access:hover {
+        background: #2980b9;
+        color: white;
+        box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4);
+    }
+
+    .btn-access i {
+        font-size: 0.875rem;
+    }
+
+    .no-courses {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .no-courses i {
+        font-size: 4rem;
+        color: #95a5a6;
+        margin-bottom: 1.5rem;
+    }
+
+    .no-courses h3 {
+        color: #2c3e50;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .no-courses p {
+        color: #7f8c8d;
+        margin-bottom: 2rem;
+    }
+
+    .btn-explore {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 2rem;
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-explore:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .student-dashboard {
+            padding: 1rem;
+        }
+
+        .course-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
 {% endblock %}

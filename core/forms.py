@@ -104,25 +104,41 @@ class InstructorCreationForm(UserCreationForm):
         return user
 
 class CourseForm(forms.ModelForm):
+    
     class Meta:
         model = Curso
-        fields = ['titulo', 'descripcion', 'precio', 'tipo']
+        fields = ['instructor', 'titulo', 'descripcion', 'precio', 'tipo', 'link_material', 'archivo_pdf']
         widgets = {
             'descripcion': forms.Textarea(attrs={'rows': 4}),
             'precio': forms.NumberInput(attrs={'min': '0', 'step': '0.01'}),
+            'link_material': forms.URLInput(attrs={'placeholder': 'https://...'}),
         }
         labels = {
+            'instructor': 'Instructor',
             'titulo': 'Título del Curso',
             'descripcion': 'Descripción',
             'precio': 'Precio',
-            'tipo': 'Tipo de Curso'
+            'tipo': 'Tipo de Curso',
+            'link_material': 'Link del Material (Opcional)',
+            'archivo_pdf': 'Material PDF (Opcional)'
         }
         help_texts = {
+            'instructor': 'Selecciona el instructor a cargo del curso',
             'titulo': 'Ingresa un título descriptivo para el curso',
             'descripcion': 'Describe el contenido y objetivos del curso',
             'precio': 'Establece el precio en dólares',
-            'tipo': 'Selecciona si el curso será grabado o en vivo'
+            'tipo': 'Selecciona si el curso será grabado o en vivo',
+            'link_material': 'Puedes proporcionar un enlace a material adicional (opcional)',
+            'archivo_pdf': 'Puedes subir un archivo PDF con material complementario (opcional)'
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Configurar el queryset y el formato de visualización del instructor
+        self.fields['instructor'].queryset = Usuario.objects.filter(es_instructor=True)
+        self.fields['instructor'].empty_label = "Selecciona un instructor"
+        # Personalizar el widget para mostrar mejor información
+        self.fields['instructor'].widget.attrs.update({'class': 'form-control'})
 
 class EstudianteRegistrationForm(UserCreationForm):
     email = forms.EmailField(

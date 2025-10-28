@@ -9,7 +9,7 @@
     </div>
 
     <div class="section">
-        <form method="post" class="course-form">
+        <form method="post" class="course-form" id="createCourseForm">
             {% csrf_token %}
             
             {% for field in form %}
@@ -40,6 +40,29 @@
         </form>
     </div>
 </div>
+
+<script>
+// Limpiar el formulario cuando se carga la página
+window.addEventListener('pageshow', function(event) {
+    // También se activa cuando se navega hacia atrás
+    if (event.persisted) {
+        document.getElementById('createCourseForm').reset();
+    }
+});
+
+// Limpiar el formulario cuando se abandona la página
+window.addEventListener('unload', function() {
+    // Limpiar el formulario
+    document.getElementById('createCourseForm').reset();
+    
+    // Limpiar cualquier dato almacenado en el almacenamiento local
+    localStorage.removeItem('courseFormData');
+    sessionStorage.removeItem('courseFormData');
+});
+
+// Prevenir que el navegador autoguarde los datos del formulario
+document.getElementById('createCourseForm').setAttribute('autocomplete', 'off');
+</script>
 
 <style>
 .admin-content {

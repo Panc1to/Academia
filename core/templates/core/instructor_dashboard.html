@@ -9,26 +9,23 @@
         <p>Gestiona tus cursos y estudiantes</p>
     </div>
 
-    <div class="dashboard-stats">
+    <div class="stats-container">
         <div class="stat-card">
-            <i class="fas fa-book"></i>
-            <div class="stat-info">
-                <h3>{{ cursos_count }}</h3>
-                <p>Cursos Activos</p>
+            <div class="stat-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ cursos_count }}</h3>
+                <p class="stat-label">Cursos Activos</p>
             </div>
         </div>
         <div class="stat-card">
-            <i class="fas fa-users"></i>
-            <div class="stat-info">
-                <h3>{{ estudiantes_count }}</h3>
-                <p>Estudiantes Totales</p>
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
             </div>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-chart-line"></i>
-            <div class="stat-info">
-                <h3>{{ total_ingresos }}</h3>
-                <p>Ingresos Totales</p>
+            <div class="stat-content">
+                <h3 class="stat-value">{{ estudiantes_count }}</h3>
+                <p class="stat-label">Estudiantes Totales</p>
             </div>
         </div>
     </div>
@@ -37,10 +34,6 @@
         <a href="{% url 'crear_curso' %}" class="action-button">
             <i class="fas fa-plus"></i>
             Crear Nuevo Curso
-        </a>
-        <a href="{% url 'ver_estadisticas' %}" class="action-button secondary">
-            <i class="fas fa-chart-bar"></i>
-            Ver Estadísticas
         </a>
     </div>
 
@@ -61,11 +54,11 @@
                     </div>
                 </div>
                 <div class="course-actions">
-                    <a href="{% url 'editar_curso' curso.id %}" class="btn-edit">
+                    <a href="{% url 'editar_curso_view' curso.id %}" class="btn-edit">
                         <i class="fas fa-edit"></i> Editar
                     </a>
-                    <a href="{% url 'ver_curso' curso.id %}" class="btn-view">
-                        <i class="fas fa-eye"></i> Ver
+                    <a href="{% url 'eliminar_curso_instructor' curso.id %}" class="btn-delete">
+                        <i class="fas fa-trash"></i> Eliminar
                     </a>
                 </div>
             </div>
@@ -101,6 +94,71 @@
     .dashboard-header p {
         color: #7f8c8d;
         font-size: 1.1rem;
+    }
+
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .stat-icon {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        flex-shrink: 0;
+        background: rgba(52, 152, 219, 0.1);
+    }
+
+    .stat-card:nth-child(1) .stat-icon {
+        background: rgba(52, 152, 219, 0.1);
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: rgba(52, 152, 219, 0.1);
+    }
+
+    .stat-icon i {
+        font-size: 2rem;
+        color: #3498db;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+        margin: 0;
+        font-weight: 500;
     }
 
     .dashboard-stats {
@@ -272,12 +330,23 @@
         color: #1976d2;
     }
 
+    .btn-delete {
+        background: #ffebee;
+        color: #c62828;
+    }
+
     .btn-view {
         background: #f8f9fa;
         color: #2c3e50;
     }
 
     .btn-edit:hover, .btn-view:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-delete:hover {
+        background: #ef5350;
+        color: white;
         transform: translateY(-2px);
     }
 

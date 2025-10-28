@@ -58,8 +58,8 @@
                         <td>{{ instructor.email }}</td>
                         <td>{{ instructor.date_joined|date:"d/m/Y" }}</td>
                         <td>
-                            <a href="{% url 'admin:core_usuario_change' instructor.id %}" class="action-link" target="_blank">
-                                <i class="fas fa-edit"></i>
+                            <a href="{% url 'edit_user' instructor.id %}" class="action-link">
+                                <i class="fas fa-edit"></i> Editar
                             </a>
                         </td>
                     </tr>
@@ -88,8 +88,8 @@
                         <td>{{ estudiante.email }}</td>
                         <td>{{ estudiante.date_joined|date:"d/m/Y" }}</td>
                         <td>
-                            <a href="{% url 'admin:core_usuario_change' estudiante.id %}" class="action-link" target="_blank">
-                                <i class="fas fa-edit"></i>
+                            <a href="{% url 'edit_user' estudiante.id %}" class="action-link">
+                                <i class="fas fa-edit"></i> Editar
                             </a>
                         </td>
                     </tr>

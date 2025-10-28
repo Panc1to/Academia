@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conecta Saber - {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core/css/buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
     <style>
         :root {
             --primary-color: #007bff;
@@ -110,7 +114,7 @@
                 Conecta Saber
                 {% if user.is_authenticated %}
                     <span style="font-size: 0.7em; color: var(--secondary-color); margin-left: 10px;">
-                        - {{ user.nombre_completo }}
+                        - {{ user.username }}
                     </span>
                 {% endif %}
             </a>
